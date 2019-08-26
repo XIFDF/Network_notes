@@ -159,3 +159,38 @@ Directory& tempDir()
 * 为内置对象进行手工初始化，因为C++不保证初始化它们。
 * 构造函数最好使用成员初值列，而不要在构造函数本体内使用赋值操作。初值列列出的成员变量，其排列次序应该和它们在class中的声明次序相同。
 * 为免除“跨编译单元之初始化次序”问题，请以local static 对象替换non-local static对象。
+
+## 条款05：了解C++默默编写并调用哪些函数
+### Know what functions C++ silently writes and calls.
+* 编译器可以暗自为class创建default构造函数、copy构造函数、copy assignment操作符，以及析构函数。
+如果你声明了一个构造函数，编译器于是不再为它创建default构造函数。
+
+## 条款06：若不想使用编译器自动生成的函数，就该明确拒绝
+### Explicitly disallow the use of compiler-generated functions you do not want.
+* 为驳回编译器自动(暗自)提供的机能，可将相应的成员函数声明为private并且不予实现。使用像Uncopyable这样的base class也是一种做法。
+```c++
+class HomeForSale { //销售的房子不应可被复制
+public:
+    ...
+private:
+    ...
+    HomeForSale(const HomeForSale&);    //只有声明，无需实现，故省略了参数名称
+    HomeForSale& operator=(const HomeForSale&);
+}
+```
+另外一种做法：
+```c++
+class Uncopyable {
+protected:
+    Uncopyable() {}         //允许derived(派生)对象构造和析构
+    ~Uncopyable() {}
+private:
+    Uncopyable(const Uncopyable&);      //但阻止copying
+    Uncopyable& operator=(const Uncopyable&);
+}；
+```
+```c++
+class HomeForSale: private Uncopyable {
+    ...
+};
+```
