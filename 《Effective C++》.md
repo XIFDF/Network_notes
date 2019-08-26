@@ -41,7 +41,8 @@ inline void callWithMax(const T& a, const T& b)
 ## 条款03：尽可能使用const
 ### Use const whenever possible
 如果关键字const出现在星号左边，表示被指物体是常量；如果出现在星号右边，表示指针自身是常量；如果出现在星号两边，表示被指物和指针两者都是常量。<br>
-如果要使用迭代器
+主要作用：将某些东西声明为const可帮助编译器侦查出错误用法。const可被施加于任何作用域内的对象、函数参数、函数返回类型、成员函数本体。<br>
+* 如果要使用迭代器
 ```c++
 std::vector<int> vec;
 ...
@@ -52,4 +53,26 @@ const std::vector<int>::iterator iter = vec.begin();    //iter 的作用像个 T
 std::vector<int>::const_iterator cIter = vec.begin();   //cIter 的作用像个const T*
 *cIter = 10;      //错误！*cIter是const
 ++cIter;          //没问题，改变cIter
+```
+* 当const和non-const成员函数有着实质等价的实现时，令non-const版本调用const版本可以避免代码重复。
+```c++
+class TextBlock {
+public:
+    ...
+    const char& operator[](std::size_t position) cosnt  //一如既往
+    {
+        ...
+        ...
+        return text[position];
+    }
+    char& operator[](std:size_t position)
+    {
+        return 
+            const_cast<chat&>(
+                static_cast<const TextBlock&>(*this)
+                    [position]
+            );
+    }
+};
+...
 ```
