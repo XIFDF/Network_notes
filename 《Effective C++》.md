@@ -78,7 +78,7 @@ public:
 ```
 ## 条款04：确定对象被使用前已先被初始化
 ### Make sure that object are initialized before they're used.
-区分赋值和初始化
+* 区分赋值和初始化
 ```c++
 class PhoneNumber {...};
 class ABEntry {
@@ -108,3 +108,54 @@ ABEntry::ABEntry(const std::string& name, const std::string& address,
              numTimesConsulted(0)
 { }
 ```
+* 当某编译单元内的某个non-local static对象的初始化动作使用了另一编译单元内的某个non-local static 对象，它所用到的这个对象可能尚未被初始化，因为C++对“定义于不同编译单元内的non-local static对象”的初始化次序并无明确定义。
+注：编译单元是指产出单一目标文件的那些源码。基本上它是单一源码文件加上其所含入的头文件。
+```c++
+class FIleSystem {      //来自你的程序库
+public:
+    ...
+    std::size_t numDisks() const;
+    ...
+};
+extern FileSystem tfs;  //预备给客户使用的对象
+```
+```c++
+class Directory {       //由程序库和客户建立
+public；
+    Directory( parames );
+    ...
+};
+Directory::Directory( params )
+{
+    ...
+    std:size_t disks = tfs.numDisks(); //使用tfs对象
+}
+
+Directory tempDir( params );
+/*此时无法确定tfs会在tempDir之前先被初始化*/
+```
+这类问题可以用设计模式中单例模式的一种实现手法来解决：
+```c++
+class FileSystem { ... }
+FileSystem& tfs()
+{
+    static FileSystem fs;
+    return fs;
+}
+class Directory { ... }
+Directory::Directroy( params )
+{
+    ...
+    std::size_t disks = tfs().numDisks();
+    ...
+}
+Directory& tempDir()
+{
+    static Directory td;
+    return td;
+}
+```
+总结：
+* 为内置对象进行手工初始化，因为C++不保证初始化它们。
+* 构造函数最好使用成员初值列，而不要在构造函数本体内使用赋值操作。初值列列出的成员变量，其排列次序应该和它们在class中的声明次序相同。
+* 为免除“跨编译单元之初始化次序”问题，请以local static 对象替换non-local static对象。
