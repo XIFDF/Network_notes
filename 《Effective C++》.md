@@ -76,3 +76,35 @@ public:
 };
 ...
 ```
+## 条款04：确定对象被使用前已先被初始化
+### Make sure that object are initialized before they're used.
+区分赋值和初始化
+```c++
+class PhoneNumber {...};
+class ABEntry {
+public:
+    ABEntry(const std::string& name, const std::string& address,
+            cosnt std::list<PhoneNumber>& phones);
+private:
+    std::string theName;
+    std::string theAddress;
+    std::list<PhoneNumber> thePhones;
+    int numTimesConsulted;
+};
+ABEntry::ABEntry(const std::string& name, const std::string& address,
+            cosnt std::list<PhoneNumber>& phones)
+{
+    theName = name;            //这些都是赋值
+    theAddress = address;      //而非初始化
+    thePhones = phones;
+    numTimesConsulted = 0;
+}
+/*更佳写法，是用成员初值列替换赋值动作*/
+ABEntry::ABEntry(const std::string& name, const std::string& address,
+            cosnt std::list<PhoneNumber>& phones)
+            :theName(name),
+             theAddress(address),
+             thePhones(phones),
+             numTimesConsulted(0)
+{ }
+```
