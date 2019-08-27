@@ -194,3 +194,12 @@ class HomeForSale: private Uncopyable {
     ...
 };
 ```
+
+## 条款07：为多态基类声明virtual析构函数
+### Declare destructors virtual in polymorphic base classes.
+* polymorphic(带多态性质的)base classes应该声明一个virtual析构函数。如果class带有任何virtual函数，它就应该拥有一个virtual析构函数。
+* Classes的设计目的如果不是作为base classes使用，或不是为了具备多态性，就不该声明virtual函数。
+* 只有当class内含至少一个virtual函数，才为它声明virtual析构函数。
+
+## 条款08：别让异常逃离析构函数
+### Prevent exceptions from leaving destructors.
