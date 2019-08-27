@@ -131,8 +131,8 @@ Directory::Directory( params )
     std:size_t disks = tfs.numDisks(); //使用tfs对象
 }
 
-Directory tempDir( params );
 /*此时无法确定tfs会在tempDir之前先被初始化*/
+Directory tempDir( params );
 ```
 这类问题可以用设计模式中单例模式的一种实现手法来解决：
 ```c++
@@ -203,3 +203,34 @@ class HomeForSale: private Uncopyable {
 
 ## 条款08：别让异常逃离析构函数
 ### Prevent exceptions from leaving destructors.
+* 析构函数绝对不要吐出异常。如果一个被析构函数调用的函数可能抛出异常，析构函数应该捕捉任何异常，然后吞下它们(不传播)或结束程序。
+```c++
+/*如果close抛出异常就结束程序。通常通过调用abort完成*/
+DBConn::~DBConn()
+{
+    try { db.close(); }
+    catch (...) {
+        制作运转记录，记下对close的调用失败；
+        std::abort();
+    }
+}
+/////////////////////////////////////////
+/*吞下因调用close而发生的异常*/
+DBConn::~DBConn()
+{
+    try { db.close(); }
+    catch (...) {
+        制作运转记录，记下对close的调用失败；
+    }
+}
+```
+* 如果客户需要对某个操作函数运行期间抛出的异常做出反应，那么class应该提供一个普通函数(而非在析构函数中)执行该操作。
+
+## 条款09：绝不在构造和析构过程中调用virtual函数
+### Never call virtual function during construction or destruction.
+* 在构造和析构期间不要调用virtual函数，因为这类调用从不下降至derived class。
+
+## 条款10：令operator=返回一个reference to *this
+### Have assignment operators return a reference to *this.
+
+
