@@ -233,4 +233,35 @@ DBConn::~DBConn()
 ## 条款10：令operator=返回一个reference to *this
 ### Have assignment operators return a reference to *this.
 
+## 条款11：在operator=中处理“自我赋值”
+### Handle assignment to self in operator=.
+对象可能会赋值给自己。
+```c++
+/* 潜在的自我赋值 */
+a[i] = a[j];
+*px = *py;
+```
+```c++
+class Bitmap { ... }
+class Widget {
+    ...
+private:
+    Bitmap *pb;
+};
+
+/* 不安全版本 */
+Widget& Widget::operator=(const Widget& rhs)
+{
+    delete pb;
+    pb = new Bitmap(*rhs.pb);
+    return *this;
+}
+```
+
+## 条款12：复制对象时勿忘其每一个成分
+### Copy all parts of an Object.
+* Copying 函数应该确保复制“对象内的所有成员变量”及“所有base class成分”。
+* 不要尝试以某个copying函数实现另一个copying函数。应该将共同机能放进第三个函数中，并有两个copying函数共同调用。
+
+
 
