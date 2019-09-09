@@ -268,3 +268,10 @@ Widget& Widget::operator=(const Widget& rhs)
 ### Use object to manage resources.
 * 为防止资源泄漏，请使用RAII对象，它们在构造函数中获得资源并在析构函数中释放资源。
 * 两个常被使用的RAII classes分别是tr1::shared_ptr和auto_ptr。前者通常是较佳选择，因为其copy行为比较直观。若选择auto_ptr，复制动作会使它(被复制物)指向null。
+
+## 条款14：在资源管理类中小心copying行为
+### Think carefully about copying behavior in resource-managing classes.
+* 复制RAII对象必须一并复制它所管理的资源，所以资源的copying行为决定RAII对象的copying行为。
+* 普遍而常见的RAII class copying行为是：抑制copying、施行引用计数法（reference）。不过其他行为也都可能被实现。
+
+
