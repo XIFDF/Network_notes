@@ -15,3 +15,47 @@ void Stack<std::string>::push (std::string const& elem)
     elems.push_back(elem);
 }
 ```
+
+## 包含模型(inclusion model)
+按照cpp的习惯：
+* 类和其他类型都被放在一个头文件中。
+* 对于全局变量和(非内联)函数，只有声明放在头文件中，定义则位于dot-C文件。
+我们习惯于作出以下编写：
+```c++
+//basic/myfirst.hpp
+#ifndef MYFIRST_HPP
+#DEFINE MYFIRST_HPP
+
+//模板声明
+template <typename T>
+void print_typeof (T const&)
+
+#endif //MYFIRST_HPP
+```
+```C++
+//basics/myfirst.cpp
+#include <iostream>
+#incldue <typeinfo>
+#include "myfirst.hpp"
+
+//模板的实现/定义
+template <typename T>
+void print_typeof (T const& x)
+{ 
+    std::cout << typeid(x).name() << std::endl;
+}
+```
+当我们在另一个dot-C文件里使用这个模板，并且把模板声明包含进这个文件：
+```c++
+//basics/myfirstmain.cpp
+#include "myfirst.hpp"
+
+//使用模板
+int main()
+{
+    double ice = 3.0;
+    print_typef(ice); // 调用参数类型为double的函数模板
+}
+```
+大部分C++编译器都会顺利地接受这个程序，但是链接器可能会报错，提示找不到函数print_typeof()的定义。<br>
+解决方法：
