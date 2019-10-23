@@ -59,3 +59,20 @@ int main()
 ```
 大部分C++编译器都会顺利地接受这个程序，但是链接器可能会报错，提示找不到函数print_typeof()的定义。<br>
 解决方法：
+* 使用包含模型或者分离模型
+* 包含模型
+通过把
+```c++
+#include "myfirst.cpp"
+```
+添加到myfirst.hpp的末尾，或者在每个使用模板的dot-C文件都包含myfirst.cpp。在或者完全不要myfirst.cpp，然后重写myfirst.hpp，让它同时包含模板声明和模板定义。
+* 分离模型(separation model)
+又称导出模型(export template)
+```c++
+//使用export关键字
+
+
+
+
+
+```
