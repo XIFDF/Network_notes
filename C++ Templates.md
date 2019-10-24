@@ -80,8 +80,40 @@ int main()
 * 指针类型（包含普通对象的指针类型、函数指针类型、指向成员的指针类型）。
 * 引用类型（指向对象或者指向函数的引用都是允许的）
 ### 模板的模板参数
+模板的模板参数是代表类模板的占位符（placeholder）。它的声明和类模板的声明很类似，但不能使用关键字struct和union。
+```c++
+template <template<typename T,
+                  typename A = MyAllacator> class Container>
+class Adaptation {
+    Container<int> storage; //隐式等同于Container<int, MyAllocator>
+    ...
+};
+```
 
+### List参数
+有时候，我们希望可以把具有几个类型的列表看成一个单一的模板实参，并用这个单一的实参进行传递。通常情况下，使用这种列表会有两个目的：声明一个参数个数不固定的函数，或者定义一种具有成员个数不固定的类型结构。
+例如，我们希望定义一个能够计算任意多个值中最大者的模板。一种可能的声明语法是：使用省略号标记，从而说明最后一个模板参数的含义是允许匹配任意个数的实参。
+```c++
+#include <iostream>
 
+template <typename T, ... list>
+T const& max (T const, T const&, list const&);
+int main()
+{
+    std::cout << max(1, 2, 3, 4) << std::endl;
+}
+
+template <typename T> inline
+T const& max (T const& a, T const& b)
+{
+    return a < b ? b : a; // 我们用于求普通的二元最大值的操作
+}
+
+//模板函数的实现1,使用重载函数模板
+template <typename T, ... list> inline
+T const& max (T const& a, T const& b, list const& x)
+//模板函数的实现2,使用模板元编程
+```
 
 
 
