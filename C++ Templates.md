@@ -35,7 +35,7 @@ void print_typeof (T const&)
 ```C++
 //basics/myfirst.cpp
 #include <iostream>
-#incldue <typeinfo>
+#include <typeinfo>
 #include "myfirst.hpp"
 
 //模板的实现/定义
