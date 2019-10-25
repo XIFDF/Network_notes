@@ -109,11 +109,14 @@ T const& max (T const& a, T const& b)
     return a < b ? b : a; // 我们用于求普通的二元最大值的操作
 }
 
-//模板函数的实现1,使用重载函数模板
+//模板函数的实现,使用重载函数模板
 template <typename T, ... list> inline
 T const& max (T const& a, T const& b, list const& x)
-//模板函数的实现2,使用模板元编程
+{
+    return max(a, max(b, x));
+}
 ```
-
+调用max(1,2,3,4)的步骤：<br>
+由于具有4个参数，所以具有二元参数的max()并不能匹配，于是就选择了参数为T=int与list = int，int的第2个模板。这等于调用第1个实参为1、第2个实参为max(2,3,4)的二元函数模板max()。接下来调用max(2,3,4)，这也不能和二元参数的max()进行匹配，于是我们要调用T=int与list=int的list参数版本。最后一次的子表达式是max(b,x),它可以扩展成max(3,4),于是选择二元模板，该递归结束。
 
 
