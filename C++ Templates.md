@@ -211,7 +211,7 @@ class Accum {
     public:
         typedef typename Trait::AccT AccT;
         static Acct accum (T const* beg, T const* end) {
-            AccT total = Traits::zero();
+            AccT total = Traits::zero(); // 初始化的 value trait
             while (beg != end) {
                 Policy::accumulate(total, *beg);
                 ++beg;
