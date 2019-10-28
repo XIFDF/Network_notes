@@ -131,4 +131,72 @@ C++动多态，是通过继承和虚函数来实现。借助模板的多态为�
 * 所生成的代码效率通常比较高（因为并不存在通过指针的间接调用，而且，可以进行演绎的非虚拟函数具有更多的内联机会）。
 * 对于只提供部分接口的具体类型，如果在应用程序中只是使用到这一部分接口，那么也可以使用该具体类型；而不必在乎该类型是否提供其他部分的接口。
 
+## trait与policy
+policy类和trait是两种C++程序设计机制，它们有助于对某些额外参数的管理，这里的额外参数是指：在具有工业强度的模板设计中所出现的参数。
+### fixed traits
+求两个指针之间元素的总和
+```c++
+template <typename T>
+inline
+T accum(T const* beg, T const* end)
+{
+    T total = T();
+    while(beg != end){
+        total += *beg;
+        ++beg;
+    }
+    return total;
+}
+```
+我们的输出的类型是依据T，即我们实例化的时候，但当我们在操作完+后得到的total可能因为类型范围限制得不到我们期望的值，又或者说当我们想根据不同的T输出不同类型的total时，这样设计就十分受限。<br>
+我们可以模板特化来解决：
+```c++
+template<typename T>
+class AccumulationTraits;
 
+template<>
+class AccumulationTraits<char> {
+    public:
+      typedef int AccT;
+};
+
+template<>
+class AccumulationTraits<short> {
+    public:
+      typedef int AccT;
+};
+
+template<>
+class AccumulationTraits<int> {
+    public:
+      typedef long AccT;
+};
+
+template<>
+class AccumulationTraits<unsigned int> {
+    public:
+      typedef unsigned long AccT;
+};
+
+template<>
+class AccumulationTraits<float> {
+    public:
+      typedef double AccT;
+};
+```
+在我们定义的时候
+```c++
+template <typename T>
+inline
+typename AccumulationTraits<T>::AccT accum(T const* beg, T const* end)
+{
+    // 返回值的类型是一个元素类型的trait
+    typedef typename AccumulationTraits<T>::AccT AccT;
+    AccT total = T();
+    while(beg != end){
+        total += *beg;
+        ++beg;
+    }
+    return total;
+}
+```
