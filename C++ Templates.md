@@ -200,3 +200,45 @@ typename AccumulationTraits<T>::AccT accum(T const* beg, T const* end)
     return total;
 }
 ```
+我们把这个存储累加和的类型成为T的trait。
+### policy和policy类
+我们把累积和求和等价起来，针对accum的所有操作，唯一需要改变的只是total += \*beg操作。于是，我们就把这个操作成为该累积过程的一个policy。因此，一个policy类就是一个提供了一个接口的类，改接口能够在算法中应用一个或多个policy。
+```c++
+template <typename T, 
+         typename Policy = SumPolicy,
+         typename Traits = AccumulationTraits<T> >
+class Accum {
+    public:
+        typedef typename Trait::AccT AccT;
+        static Acct accum (T const* beg, T const* end) {
+            AccT total = Traits::zero();
+            while (beg != end) {
+                Policy::accumulate(total, *beg);
+                ++beg;
+            }
+            return total;
+        }
+};
+```
+Policy类
+```c++
+class SumPolicy {
+   public:
+   template<typename T1, typename T2>
+   static void accumulate (T1& total, T2 const & value) {
+       total += value;
+   }
+};
+
+class MultPolicy {
+   public:
+   template<typename T1, typename T2>
+   static void accumulate (T1& total, T2 const & value) {
+       total *= value;
+   }
+};
+```
+```c++
+// 调用
+Accum<int, MultPolicy>::accum(&num[0], &num[5]);
+```
