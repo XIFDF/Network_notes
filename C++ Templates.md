@@ -242,3 +242,9 @@ class MultPolicy {
 // 调用
 Accum<int, MultPolicy>::accum(&num[0], &num[5]);
 ```
+### trait和policy的区别
+#### New Short Oxford English Dictionary 的定义
+* trait n... （名词）：用来刻划一个事物的（与众不同的）特性
+* policy n... （名词）：为了某种有益或者有利目的而采用的一些列动作。
+#### Modern C++ Design 中的声明
+* policy和trait具有许多共同点，但是policy更加注重于行为，而trait则更加注重于类型。
