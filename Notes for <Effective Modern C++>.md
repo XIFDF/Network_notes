@@ -19,8 +19,10 @@ f(expr)
 * ParamType具有指针或者引用型别，但不是个万能引用。
 * ParamType是一个万能引用。
 * ParamType既非指针也非引用。
-### ParamType是一个指针或引用，但不是个万能引用
+#### ParamType是一个指针或引用，但不是个万能引用
+1. 若expr具有引用类型，先将引用部分忽略。
+2. 尔后，对expr的型别和ParamType的型别执行模式匹配，来决定T的型别。
 
-### ParamType是一个万能引用
+#### ParamType是一个万能引用
 
-### ParamType既非指针也非引用
+#### ParamType既非指针也非引用
