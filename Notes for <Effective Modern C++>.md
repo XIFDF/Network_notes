@@ -22,6 +22,21 @@ f(expr)
 #### ParamType是一个指针或引用，但不是个万能引用
 1. 若expr具有引用类型，先将引用部分忽略。
 2. 尔后，对expr的型别和ParamType的型别执行模式匹配，来决定T的型别。
+```c++
+// 模板声明
+template<typename T>
+void f(T& param);   // param是个引用
+
+// 变量声明
+int x = 27;         // x的型别是int
+const int cx = x;   // cx的型别是const int
+const int& rx = x;  // rx是x的型别为const int的引用
+
+// 推导结果
+f(x);       // T的型别是int，param的型别是int&
+f(cx);      // T的型别是const int， param的型别是 const int&
+f(rx);      // T的型别是const int， param的型别是 const int&
+```
 
 #### ParamType是一个万能引用
 
