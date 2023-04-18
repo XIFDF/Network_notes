@@ -121,7 +121,7 @@ extern FileSystem tfs;  //预备给客户使用的对象
 ```
 ```c++
 class Directory {       //由程序库和客户建立
-public；
+public:
     Directory( parames );
     ...
 };
@@ -187,7 +187,7 @@ protected:
 private:
     Uncopyable(const Uncopyable&);      //但阻止copying
     Uncopyable& operator=(const Uncopyable&);
-}；
+};
 ```
 ```c++
 class HomeForSale: private Uncopyable {
@@ -210,7 +210,7 @@ DBConn::~DBConn()
 {
     try { db.close(); }
     catch (...) {
-        制作运转记录，记下对close的调用失败；
+        // 制作运转记录，记下对close的调用失败；
         std::abort();
     }
 }
@@ -220,7 +220,7 @@ DBConn::~DBConn()
 {
     try { db.close(); }
     catch (...) {
-        制作运转记录，记下对close的调用失败；
+        // 制作运转记录，记下对close的调用失败；
     }
 }
 ```
